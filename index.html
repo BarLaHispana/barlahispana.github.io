@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Carta · La Hispana Café Bar</title>
+  <meta name="description" content="Carta de La Hispana Café Bar: desayunos, cafés, tostadas, bollería argentina, raciones, hamburguesas y bebidas.">
+  <meta name="theme-color" content="#1e4d1b">
+
+  <meta property="og:title" content="Carta · La Hispana Café Bar">
+  <meta property="og:description" content="Desayunos, cafés, raciones, hamburguesas y bebidas.">
+  <meta property="og:image" content="img/logo.png">
+  <meta property="og:type" content="website">
+
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- Bunny Fonts: mismas fuentes que Google Fonts, pero sin rastreo (RGPD) -->
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link rel="stylesheet" href="https://fonts.bunny.net/css?family=abril-fatface:400|league-spartan:600,700|nunito-sans:400,600,700&display=swap">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#carta">Saltar a la carta</a>
+
+  <header class="cabecera">
+    <div class="cabecera__inner">
+      <img class="cabecera__logo" src="img/logo.png" alt="" width="96" height="96">
+      <h1 class="cabecera__titulo">La Hispana</h1>
+      <p class="cabecera__sub"><span class="raya" aria-hidden="true"></span><span data-i18n="subtitulo">Café Bar</span><span class="raya" aria-hidden="true"></span></p>
+    </div>
+    <div class="idioma" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Secciones de la carta">
+    <ul class="nav__lista" id="nav"></ul>
+  </nav>
+
+  <main id="carta" class="carta" aria-live="polite">
+    <p class="cargando" data-i18n="cargando">Cargando la carta…</p>
+  </main>
+
+  <footer class="pie" id="pie"></footer>
+
+  <button class="arriba" type="button" id="arriba" aria-label="Volver arriba" hidden>↑</button>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
