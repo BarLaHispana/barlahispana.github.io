@@ -48,6 +48,14 @@
     moluscos:    ["MU", "Moluscos", "Molluscs"]
   };
 
+  // Columna "etiquetas": argentino, nuevo, y días de la semana (muestra "¡Hoy!" ese día).
+  var DIAS = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+  var ETQ = {
+    argentino: { es: "Auténtico argentino", en: "Authentic Argentine" },
+    nuevo: { es: "Nuevo", en: "New" },
+    hoy: { es: "¡Hoy!", en: "Today!" }
+  };
+
   var lang = idiomaInicial();
   var carta = null;
   var hayIngles = true; // se recalcula al cargar los datos
@@ -103,8 +111,10 @@
   function precio(raw) {
     var s = String(raw || "").trim();
     if (!s) return "";
+    // Solo se formatea si es un único número ("3,80", "+0,50", "desde 3,00").
+    // Cualquier otra cosa ("2x1", "S/M") se muestra tal cual.
+    if (!/^[^\d]*\d+(?:[.,]\d{1,2})?\s*€?\s*$/.test(s)) return s;
     var m = s.match(/(\d+(?:[.,]\d{1,2})?)/);
-    if (!m) return s; // texto libre, p. ej. "S/M"
     var num = parseFloat(m[1].replace(",", "."));
     var antes = s.slice(0, m.index).replace(/€/g, "").trim();
     var signo = "";
@@ -180,9 +190,34 @@
 
   /* ---------------- Pintado ---------------- */
 
-  function pintarItem(it, doble) {
+  function bandera() {
+    var txt = ETQ.argentino[lang];
+    return el("span", { class: "bandera-ar", role: "img", "aria-label": txt, title: txt });
+  }
+
+  function etiquetas(it) {
+    return (it.etiquetas || "").split(/[,;]+/).map(function (e) { return slug(e).replace(/-/g, "_"); }).filter(Boolean);
+  }
+
+  function pintarItem(it, doble, destacado) {
+    var etq = etiquetas(it);
+    var hoy = DIAS[new Date().getDay()];
+    var esArg = etq.indexOf("argentino") !== -1;
+    if (esArg) hayArgentino = true;
+
+    var nombre = el("span", { class: "item__nombre" });
+    var textoNombre = tr(it.nombre);
+    if (esArg && !destacado) {
+      // La última palabra va pegada a la bandera para que nunca se quede sola en otra línea
+      var corte = textoNombre.lastIndexOf(" ");
+      nombre.appendChild(document.createTextNode(textoNombre.slice(0, corte + 1)));
+      nombre.appendChild(el("span", { class: "nowrap" }, [textoNombre.slice(corte + 1) + " ", bandera()]));
+    } else {
+      nombre.textContent = textoNombre;
+    }
+
     var fila = el("div", { class: "item__fila" }, [
-      el("span", { class: "item__nombre", text: tr(it.nombre) }),
+      nombre,
       el("span", { class: "item__puntos", "aria-hidden": "true" })
     ]);
     if (doble) {
@@ -198,6 +233,12 @@
     var d = tr(it.descripcion);
     if (d) li.appendChild(el("p", { class: "item__desc", text: d }));
 
+    var pills = [];
+    if (etq.indexOf(hoy) !== -1) pills.push(el("span", { class: "pill pill--hoy", text: ETQ.hoy[lang] }));
+    if (etq.indexOf("nuevo") !== -1) pills.push(el("span", { class: "pill", text: ETQ.nuevo[lang] }));
+    if (esArg && destacado) pills.push(el("span", { class: "pill pill--ar" }, [bandera(), ETQ.argentino[lang]]));
+    if (pills.length) li.appendChild(el("div", { class: "item__pills" }, pills));
+
     var codigos = (it.alergenos || "").split(/[,;\s]+/).map(function (c) { return slug(c).replace(/-/g, "_"); })
       .filter(function (c) { return ALERGENOS[c]; });
     if (codigos.length) {
@@ -211,9 +252,11 @@
   }
 
   var usadosSet = {};
+  var hayArgentino = false;
 
   function pintarCarta() {
     usadosSet = {};
+    hayArgentino = false;
     var main = document.getElementById("carta");
     var nav = document.getElementById("nav");
     main.textContent = ""; nav.textContent = "";
@@ -221,7 +264,9 @@
     carta.forEach(function (b) {
       var sec = el("div", { class: "bloque__secciones" });
       var tb = tr(b.texto);
-      var bloque = el("section", { class: "bloque", "aria-label": tb || null }, [
+      // El bloque llamado "Ofertas" se pinta destacado (ponlo el primero en el CSV)
+      var destacado = /^ofertas?\b/.test(slug(clave(b.texto)));
+      var bloque = el("section", { class: "bloque" + (destacado ? " bloque--ofertas" : ""), "aria-label": tb || null }, [
         tb ? el("h2", { class: "bloque__titulo", text: tb }) : null, sec
       ]);
 
@@ -236,17 +281,21 @@
           var cont = el("div", { class: "grupo" });
           if (g.texto) cont.appendChild(el("h4", { class: "grupo__titulo", text: tr(g.texto) }));
           var ul = el("ul", { class: "items" });
-          g.items.forEach(function (it) { ul.appendChild(pintarItem(it, c.doble)); });
+          g.items.forEach(function (it) { ul.appendChild(pintarItem(it, c.doble, destacado)); });
           cont.appendChild(ul);
           art.appendChild(cont);
         });
         c.notas.forEach(function (n) { art.appendChild(el("p", { class: "nota", text: tr(n) })); });
         sec.appendChild(art);
 
-        nav.appendChild(el("li", null, [el("a", { href: "#" + c.id, text: tr(c.texto) })]));
+        nav.appendChild(el("li", null, [el("a", { href: "#" + c.id, class: destacado ? "nav__oferta" : null, text: tr(c.texto) })]));
       });
       main.appendChild(bloque);
     });
+
+    if (hayArgentino) {
+      main.appendChild(el("p", { class: "leyenda-ar" }, [bandera(), " " + ETQ.argentino[lang]]));
+    }
 
     // Leyenda de alérgenos (solo si se usa alguno)
     var lista = Object.keys(ALERGENOS).filter(function (k) { return usadosSet[k]; });

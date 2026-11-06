@@ -47,6 +47,14 @@ Toda la carta está en `data/carta.csv` (se puede abrir con Excel, LibreOffice o
 | `precio` | Precio (entera si hay dos) | `13,90` · `+1,00` · `desde 3,00` |
 | `precio_media` | Precio de media (si lo rellenas, la sección muestra dos columnas: Media / Entera) | `8,00` |
 | `alergenos` | Códigos separados por comas (ver abajo) | `gluten, huevo, lacteos` |
+| `etiquetas` | Marcas especiales, separadas por comas (ver abajo) | `argentino, jueves` |
+
+**Ofertas:** todo lo que tenga en `bloque` el valor `Ofertas | Deals` se muestra con el diseño destacado (fondo crema, precio en píldora verde y estrella en el menú). Para que salga arriba del todo, sus filas tienen que ir las primeras del CSV. Si una oferta deja de estar vigente, pon `oculto` en `tipo`.
+
+**Etiquetas disponibles:**
+- `argentino`: añade la bandera argentina junto al nombre (en las ofertas, además, la etiqueta «Auténtico argentino»).
+- `nuevo`: añade la etiqueta «Nuevo».
+- `lunes`, `martes`, `miercoles`, `jueves`, `viernes`, `sabado`, `domingo`: ese día aparece una etiqueta roja de «¡Hoy!» en el plato. Se pueden poner varios días: `viernes, sabado`.
 
 **Traducción:** escribe `Español | English`. Si no pones la barra, se usa el mismo texto en los dos idiomas.
 Si una celda empieza por `|` (por ejemplo `| Breaded pork roll with ham`), esa descripción solo se ve en inglés. Sirve para explicar platos típicos a los turistas.

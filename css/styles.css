@@ -193,6 +193,51 @@ body {
 .leyenda ul { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .4rem .8rem; }
 .leyenda li { display: flex; align-items: center; gap: .45rem; font-size: .85rem; }
 
+/* ---------- Ofertas (bloque destacado) ---------- */
+.bloque--ofertas { margin-top: 1.25rem; }
+.bloque--ofertas .bloque__titulo { font-size: clamp(1.7rem, 7vw, 2.3rem); }
+.bloque--ofertas .seccion {
+  background: linear-gradient(160deg, #fbf4e6 0%, var(--crema) 100%);
+  border: 2px solid var(--dorado);
+  box-shadow: inset 0 0 0 4px #fbf4e6, inset 0 0 0 5px var(--dorado), 0 6px 18px rgba(30, 77, 27, .08);
+}
+.bloque--ofertas .item + .item { border-top-color: rgba(200, 180, 142, .6); }
+.bloque--ofertas .item__puntos { visibility: hidden; }
+.bloque--ofertas .item__precio {
+  font-size: 1.2rem; background: var(--verde); color: #fff;
+  padding: .45rem .6rem .35rem; border-radius: 999px; align-self: center;
+}
+.nav__lista a.nav__oferta { border-color: var(--dorado); background: #fbf4e6; }
+.nav__lista a.nav__oferta::before { content: "★ "; color: #b8975a; }
+.nav__lista a.nav__oferta[aria-current="true"] { background: var(--verde); border-color: var(--verde); }
+
+/* Etiquetas */
+.item__pills { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .4rem; }
+.pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font: 700 .7rem/1 var(--f-titulo); letter-spacing: .08em; text-transform: uppercase;
+  padding: .4rem .6rem .32rem; border-radius: 999px;
+  background: var(--tarjeta); color: var(--verde); border: 1px solid var(--dorado);
+}
+.pill--hoy { background: #b3261e; border-color: #b3261e; color: #fff; animation: latido 1.6s ease-in-out infinite; }
+@keyframes latido { 50% { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .pill--hoy { animation: none; } }
+
+/* Bandera argentina dibujada con CSS (los emojis de bandera no se ven en Windows) */
+.bandera-ar {
+  display: inline-block; position: relative; vertical-align: -.08em;
+  width: 1.3em; height: .86em; border-radius: 2px;
+  background: linear-gradient(#74acdf 33.3%, #fff 33.3% 66.6%, #74acdf 66.6%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .12);
+}
+.bandera-ar::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: .24em; height: .24em; border-radius: 50%;
+  background: #f6b40e; transform: translate(-50%, -50%);
+}
+.nowrap { white-space: nowrap; }
+.leyenda-ar { text-align: center; color: var(--suave); font-size: .85rem; margin: 1.5rem 0 0; }
+
 /* ---------- Pie ---------- */
 .pie {
   background: var(--verde); color: #e9efe6;
